@@ -37,14 +37,13 @@ export default function Conversaion({ id, expand, title, onSelect }: Conversatio
     setEditTitle(title || "");
   }, [title]);
 
-  // handle clikc outside for the popup menu
+  // handle click outside for the popup menu
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
         wrapperRef.current &&
         !wrapperRef.current.contains(e.target as Node)
       ) {
-        console.log("Clicked outside");
         setOpen(false);
       }
     }
@@ -118,7 +117,14 @@ export default function Conversaion({ id, expand, title, onSelect }: Conversatio
               {editTitle}
             </span>
           </Link>
-          <div className="relative" ref={wrapperRef}>
+          <div
+            className="relative"
+            ref={wrapperRef}
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
+            }}
+          >
             {/* menu button */}
             <Menu
               size={20}

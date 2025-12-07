@@ -57,6 +57,7 @@ export default function Sidebar() {
         if (isAuthenticated) {
           logout();  // Already logged in → logout
         } else {
+          closeMobileSidebar();  // Close sidebar first on mobile
           openLogin();  // Not logged in → open login modal
         }
         setIsMenuOpen(false);
@@ -151,7 +152,14 @@ export default function Sidebar() {
 
       {/* --- 3. Menu --- */}
       {(isExpanded || isMobileOpen) && (
-        <div className="mb-4 mx-3" ref={wrapperRef}>
+        <div
+          className="mb-4 mx-3"
+          ref={wrapperRef}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+          }}
+        >
           {isMenuOpen && (
             <MenuWindow
               items={menuItems}

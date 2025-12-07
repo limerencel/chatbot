@@ -58,15 +58,19 @@ export default function Chat() {
   }, [idToUse, setMessages]);
 
   return (
-    <motion.div layout className="w-full h-screen flex justify-center relative bg-background text-foreground">
+    <motion.div layout className="w-full pt-8 md:pt-6 h-screen flex justify-center relative bg-background text-foreground">
       <div
-        className={`flex flex-col max-w-[800px] w-full items-center ${messages.length > 0 ? "" : "justify-center pb-[10vh]"
-          }`}
+        className="flex flex-col max-w-[800px] w-full px-3 h-full"
       >
-        {/* Hello */}
-        {messages.length == 0 && (
-          <div className="mb-12">
-            <span className="text-3xl text-foreground">Hello, anything I can help with?</span>
+        {/* Top spacer - pushes hello to center */}
+        {messages.length === 0 && <div className="flex-1" />}
+
+        {/* Hello message - centered */}
+        {messages.length === 0 && (
+          <div className="flex justify-center items-center py-4">
+            <span className="text-2xl md:text-3xl text-foreground text-center">
+              Hello, anything I can help with?
+            </span>
           </div>
         )}
         {/* Messages */}
@@ -103,13 +107,15 @@ export default function Chat() {
           </div>
         )}
 
+        {/* Bottom spacer - matches top spacer for vertical centering */}
+        {messages.length === 0 && <div className="flex-1" />}
+
         {/* Input area */}
         <div
-          className={`w-full ${messages.length > 0 && "mb-4"
-            } rounded-3xl border border-border bg-card p-3 shadow-md focus-within:shadow-lg transition-all duration-200 ease-in-out`}
+          className={`w-full mb-4 md:mb-6 rounded-3xl border border-border bg-card md:p-3 p-2 shadow-md focus-within:shadow-lg transition-all duration-200 ease-in-out`}
         >
           <form
-            className="w-full flex items-end gap-2"
+            className="w-full flex gap-2"
             onSubmit={(e) => {
               e.preventDefault();
               const trimmed = input.trim();

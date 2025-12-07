@@ -24,12 +24,12 @@ export default function LoginForm({ onClose }: LoginFormProps) {
         <>
             {/* Backdrop - click to close */}
             <div
-                className='fixed inset-0 bg-black/50 z-40'
+                className='fixed inset-0 bg-black/50 z-60'
                 onClick={onClose}
             />
 
             {/* Modal */}
-            <div className='fixed w-[400px] border border-border rounded-lg bg-card z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl'>
+            <div className='fixed w-[calc(100%-2rem)] max-w-[400px] border border-border rounded-lg bg-card z-60 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl'>
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border">
                     <span className='text-lg font-semibold text-foreground'>Enter your Secrets</span>
