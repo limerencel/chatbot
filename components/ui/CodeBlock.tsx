@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { dracula, stackoverflow } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { dracula, stackoverflowLight } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { useTheme } from "next-themes";
 
 // This component manages its OWN "copied" state
@@ -54,7 +54,7 @@ export const CodeBlock = ({
         </button>
       </div>
       <SyntaxHighlighter
-        style={resolvedTheme === "dark" ? dracula : stackoverflow}
+        style={resolvedTheme === "dark" ? dracula : stackoverflowLight}
         language={match[1]}
         PreTag="div"
         customStyle={{
