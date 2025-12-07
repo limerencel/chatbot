@@ -7,11 +7,15 @@ import { getChatById, SaveChat } from "../utils/storage";
 import { useSearchParams } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import MarkdownRenderer from "./ui/MarkdownRenderer";
+import { useAuth } from "./ModalProvider";
 
 export default function Chat() {
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [selectedModel, setSelectedModel] = useState("deepseek-chat");
+
+  // Get auth state from context
+  const { isAuthenticated, isLoading, openLogin } = useAuth();
 
   // memoize transport so it's recreated only when selectedModel changes
   const transport = useMemo(
@@ -128,15 +132,17 @@ export default function Chat() {
                   form?.requestSubmit();
                 }
               }}
+              onClick={() => !isAuthenticated && openLogin()}
               className="w-full field-sizing-content max-h-[120px] resize-none bg-transparent p-2 text-base text-foreground placeholder-muted-foreground focus:outline-none"
-              placeholder="Feel free to ask anything"
-              disabled={status !== "ready"}
+              placeholder={isAuthenticated ? "Feel free to ask anything" : "🔒 Click here to login first..."}
+              disabled={status !== "ready" || !isAuthenticated}
+              readOnly={!isAuthenticated}
             />
 
             <button
               type="submit"
               className="flex cursor-pointer h-10 w-10 ml-auto shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50"
-              disabled={!input.trim() || status !== "ready"}
+              disabled={!input.trim() || status !== "ready" || !isAuthenticated}
             >
               {status === "submitted" ? (
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />

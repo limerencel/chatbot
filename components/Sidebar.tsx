@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Menu, Plus, Moon, Sun, Settings, Trash2, LogIn } from "lucide-react";
+import { Menu, Plus, Moon, Sun, Settings, Trash2, LogIn, LogOut } from "lucide-react";
 import Conversaion from "./ui/Conversaion";
 import { ChatSession, getChats, clearChats } from "../utils/storage";
 import { useTheme } from "next-themes";
@@ -18,12 +18,12 @@ export default function Sidebar() {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Get openLogin from the modal context
-  const { openLogin } = useModal();
+  // Get auth functions from context
+  const { openLogin, isAuthenticated, logout } = useModal();
 
   const toggleSidebar = () => setIsExpanded(!isExpanded);
 
-  // Dynamic menu items based on current theme
+  // Dynamic menu items based on current theme and auth state
   const menuItems: MenuItem[] = [
     {
       id: "theme",
@@ -47,11 +47,15 @@ export default function Sidebar() {
       dividerAfter: true,
     },
     {
-      id: "login",
-      label: "Login",
-      icon: <LogIn size={18} />,
+      id: "auth",
+      label: isAuthenticated ? "Logout" : "Login",
+      icon: isAuthenticated ? <LogOut size={18} /> : <LogIn size={18} />,
       action: () => {
-        openLogin();  // <-- THIS IS IT! Just call openLogin()
+        if (isAuthenticated) {
+          logout();  // Already logged in → logout
+        } else {
+          openLogin();  // Not logged in → open login modal
+        }
         setIsMenuOpen(false);
       },
     },

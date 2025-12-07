@@ -1,11 +1,25 @@
-import React from 'react'
+import { useState } from 'react'
 import { X } from 'lucide-react'
+import { useAuth } from '../ModalProvider';
 
 interface LoginFormProps {
     onClose: () => void;
 }
 
 export default function LoginForm({ onClose }: LoginFormProps) {
+
+    const [password, setPassword] = useState("");
+
+    const { login } = useAuth();
+    const handleSubmit = async () => {
+        const status = await login(password);
+        if (status) {
+            onClose();
+        } else {
+            alert("Login failed, please try again");
+        }
+    }
+
     return (
         <>
             {/* Backdrop - click to close */}
@@ -30,10 +44,11 @@ export default function LoginForm({ onClose }: LoginFormProps) {
                 {/* Body */}
                 <div className="p-4 space-y-4">
                     <div className="space-y-2">
-                        <label className="text-sm text-muted-foreground">API Key</label>
                         <input
                             type="password"
-                            placeholder="sk-..."
+                            placeholder="passcode here..."
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className='p-2 w-full border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring'
                         />
                     </div>
@@ -47,7 +62,7 @@ export default function LoginForm({ onClose }: LoginFormProps) {
                     >
                         Cancel
                     </button>
-                    <button className='px-4 py-2 rounded-md bg-primary text-primary-foreground hover:opacity-90 cursor-pointer'>
+                    <button onClick={handleSubmit} className='px-4 py-2 rounded-md bg-primary text-primary-foreground hover:opacity-90 cursor-pointer'>
                         Submit
                     </button>
                 </div>
