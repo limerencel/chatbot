@@ -58,14 +58,8 @@ export const CodeBlock = ({
         language={match[1]}
         PreTag="div"
         customStyle={{
-          marginTop: 0,
-          marginBottom: 0,
-          marginLeft: 0,
-          marginRight: 0,
-          borderTopLeftRadius: 0,
-          borderTopRightRadius: 0,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
+          margin: 0,
+          borderRadius: 0,
           padding: "1.5rem",
         }}
         {...props}
