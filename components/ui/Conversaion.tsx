@@ -9,9 +9,10 @@ interface ConversationProps {
   id: string;
   expand: boolean;
   title?: string;
+  onSelect?: () => void;
 }
 
-export default function Conversaion({ id, expand, title }: ConversationProps) {
+export default function Conversaion({ id, expand, title, onSelect }: ConversationProps) {
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title || "");
@@ -104,6 +105,7 @@ export default function Conversaion({ id, expand, title }: ConversationProps) {
         <div className="flex items-center justify-between hover:bg-accent text-muted-foreground transition-colors rounded-lg group">
           <Link
             href={`/?id=${id}`}
+            onClick={onSelect}
             className="flex flex-4 min-w-0 justify-start items-center gap-1 p-3 "
           >
             <MessageSquare size={20} className="shrink-0" />

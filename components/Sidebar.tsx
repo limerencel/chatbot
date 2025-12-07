@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Menu, Plus, Moon, Sun, Settings, Trash2, LogIn, LogOut } from "lucide-react";
+import { Menu, Plus, Moon, Sun, Settings, Trash2, LogIn, LogOut, X } from "lucide-react";
 import Conversaion from "./ui/Conversaion";
 import { ChatSession, getChats, clearChats } from "../utils/storage";
 import { useTheme } from "next-themes";
@@ -11,6 +11,7 @@ import { useModal } from "./ModalProvider";
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [conversations, setConversations] = useState<ChatSession[]>([]);
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -22,6 +23,8 @@ export default function Sidebar() {
   const { openLogin, isAuthenticated, logout } = useModal();
 
   const toggleSidebar = () => setIsExpanded(!isExpanded);
+  const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen);
+  const closeMobileSidebar = () => setIsMobileOpen(false);
 
   // Dynamic menu items based on current theme and auth state
   const menuItems: MenuItem[] = [
@@ -91,27 +94,30 @@ export default function Sidebar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  return (
-    <div
-      className={`
-        h-screen border-r
-        transition-all duration-300 ease-in-out
-        flex flex-col 
-        ${isExpanded ? "w-64" : "w-20"} 
-        bg-card border-border
-      `}
-    >
+  // Sidebar content - shared between mobile and desktop
+  const sidebarContent = (
+    <>
       {/* --- 1. Top Section --- */}
       <div className="p-4 flex flex-col gap-4 items-center">
+        {/* Desktop: expand/collapse toggle | Mobile: close button */}
         <button
-          onClick={() => { toggleSidebar(); setIsMenuOpen(false); }}
+          onClick={() => {
+            // On mobile, close sidebar. On desktop, toggle expand.
+            if (window.innerWidth < 768) {
+              closeMobileSidebar();
+            } else {
+              toggleSidebar();
+              setIsMenuOpen(false);
+            }
+          }}
           className="p-2 cursor-pointer rounded-lg hover:bg-accent transition-colors self-start text-muted-foreground"
         >
-          <Menu size={20} />
+          {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
         <Link
           href="/"
+          onClick={closeMobileSidebar}
           className={`
             flex items-center p-2 rounded-lg transition-all shadow-sm w-full 
             bg-secondary hover:bg-accent
@@ -122,7 +128,7 @@ export default function Sidebar() {
           <span
             className={`
               whitespace-nowrap overflow-hidden transition-all duration-300 ml-1 text-foreground
-              ${isExpanded ? "w-auto opacity-100" : "w-0 opacity-0"}
+              ${isExpanded || isMobileOpen ? "w-auto opacity-100" : "w-0 opacity-0"}
             `}
           >
             New Chat
@@ -136,14 +142,15 @@ export default function Sidebar() {
           <Conversaion
             id={chat.id}
             key={chat.id}
-            expand={isExpanded}
+            expand={isExpanded || isMobileOpen}
             title={chat.title}
+            onSelect={closeMobileSidebar}
           />
         ))}
       </div>
 
       {/* --- 3. Menu --- */}
-      {isExpanded && (
+      {(isExpanded || isMobileOpen) && (
         <div className="mb-4 mx-3" ref={wrapperRef}>
           {isMenuOpen && (
             <MenuWindow
@@ -159,10 +166,57 @@ export default function Sidebar() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <Settings size={20} />
-            {isExpanded && <span>Settings</span>}
+            <span>Settings</span>
           </button>
         </div>
       )}
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile hamburger button - fixed position, only visible on mobile */}
+      <button
+        onClick={toggleMobileSidebar}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card text-muted-foreground hover:bg-accent transition-colors"
+        aria-label="Toggle menu"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Mobile backdrop overlay */}
+      {isMobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"
+          onClick={closeMobileSidebar}
+        />
+      )}
+
+      {/* Mobile sidebar - slides in from left */}
+      <div
+        className={`
+          md:hidden fixed top-0 left-0 h-screen w-64 z-50
+          transform transition-transform duration-300 ease-in-out
+          ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
+          bg-card border-r border-border flex flex-col
+        `}
+      >
+        {sidebarContent}
+      </div>
+
+      {/* Desktop sidebar - always visible */}
+      <div
+        className={`
+          hidden md:flex
+          h-screen border-r
+          transition-all duration-300 ease-in-out
+          flex-col 
+          ${isExpanded ? "w-64" : "w-20"} 
+          bg-card border-border
+        `}
+      >
+        {sidebarContent}
+      </div>
+    </>
   );
 }
