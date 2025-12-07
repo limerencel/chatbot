@@ -70,9 +70,6 @@
     --color-border: hsl(var(--border));
     --color-input: hsl(var(--input));
     --color-ring: hsl(var(--ring));
-
-    /* DEMO: Custom color - automatically generates bg-ocean, text-ocean, border-ocean, etc. */
-    --color-ocean: #0ea5e9;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
