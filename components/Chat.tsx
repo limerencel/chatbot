@@ -63,7 +63,7 @@ export default function Chat() {
   return (
     <motion.div layout className="w-full pt-8 md:pt-6 h-screen flex justify-center relative bg-background text-foreground">
       <div
-        className="flex flex-col max-w-[800px] w-full px-3 h-full md:justify-center gap-4"
+        className={`flex flex-col max-w-[800px] w-full px-3 h-full gap-4 ${messages.length > 0 ? "md:justify-between" : "md:justify-center"}`}
       >
         {/* Top spacer - only on mobile to push hello to center, hidden on desktop */}
         {messages.length === 0 && <div className="flex-1 md:hidden" />}
@@ -115,7 +115,7 @@ export default function Chat() {
 
         {/* Input area */}
         <div
-          className={`w-full mb-4 md:mb-24 rounded-3xl border border-border bg-card md:p-3 p-2 shadow-md focus-within:shadow-lg transition-all duration-200 ease-in-out`}
+          className={`w-full mb-4 ${messages.length > 0 ? "md:mb-6" : "md:mb-24"} rounded-3xl border border-border bg-card md:p-3 p-2 shadow-md focus-within:shadow-lg transition-all duration-200 ease-in-out`}
         >
           <form
             className="w-full flex gap-2"
