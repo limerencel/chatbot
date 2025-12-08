@@ -24,12 +24,12 @@ export default function Conversaion({ id, expand, title, onSelect }: Conversatio
   const searchParams = useSearchParams();
   const currentChatId = searchParams.get("id");
 
-  const handleDelete = (e: React.MouseEvent) => {
+  const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (currentChatId === id) {
       router.push("/");
     }
-    deleteChat(id);
+    await deleteChat(id);
   };
 
   //? Reset local state if prop title changes (e.g. from a fresh load)
@@ -52,9 +52,9 @@ export default function Conversaion({ id, expand, title, onSelect }: Conversatio
   }, []);
 
   // --- LOGIC: Save & Cancel ---
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editTitle.trim()) return; // do not save empty title
-    renameChat(id, editTitle); // update loaclstorage
+    await renameChat(id, editTitle); // update IndexedDB
     setIsEditing(false); // turn off input
   };
   const handleCancel = () => {

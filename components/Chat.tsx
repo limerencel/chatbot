@@ -42,8 +42,8 @@ export default function Chat() {
     transport,
     id: idToUse,
     messages: [],
-    onFinish: ({ messages }) => {
-      SaveChat(idToUse, messages);
+    onFinish: async ({ messages }) => {
+      await SaveChat(idToUse, messages);
       if (!urlId) {
         window.history.replaceState(null, "", `?id=${idToUse}`);
       }
@@ -51,19 +51,22 @@ export default function Chat() {
   });
 
   useEffect(() => {
-    const loadedChat = getChatById(idToUse);
-    if (loadedChat) {
-      setMessages(loadedChat?.messages);
+    const getChatByIdAsync = async () => {
+      const loadedChat = await getChatById(idToUse);
+      if (loadedChat) {
+        setMessages(loadedChat?.messages);
+      }
     }
+    getChatByIdAsync();
   }, [idToUse, setMessages]);
 
   return (
     <motion.div layout className="w-full pt-8 md:pt-6 h-screen flex justify-center relative bg-background text-foreground">
       <div
-        className="flex flex-col max-w-[800px] w-full px-3 h-full"
+        className="flex flex-col max-w-[800px] w-full px-3 h-full md:justify-center gap-4"
       >
-        {/* Top spacer - pushes hello to center */}
-        {messages.length === 0 && <div className="flex-1" />}
+        {/* Top spacer - only on mobile to push hello to center, hidden on desktop */}
+        {messages.length === 0 && <div className="flex-1 md:hidden" />}
 
         {/* Hello message - centered */}
         {messages.length === 0 && (
@@ -75,7 +78,7 @@ export default function Chat() {
         )}
         {/* Messages */}
         {messages.length > 0 && (
-          <div className="flex-1 w-full px-4 mb-2 mt-8 relative overflow-y-auto scrollbar-hide">
+          <div className="flex-1 w-full px-4 mb-2 mt-8 relative overflow-y-auto scrollbar-hide md:flex-initial md:max-h-[calc(100vh-200px)] md:overflow-y-auto">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -107,12 +110,12 @@ export default function Chat() {
           </div>
         )}
 
-        {/* Bottom spacer - matches top spacer for vertical centering */}
-        {messages.length === 0 && <div className="flex-1" />}
+        {/* Bottom spacer - only on mobile, hidden on desktop */}
+        {messages.length === 0 && <div className="flex-1 md:hidden" />}
 
         {/* Input area */}
         <div
-          className={`w-full mb-4 md:mb-6 rounded-3xl border border-border bg-card md:p-3 p-2 shadow-md focus-within:shadow-lg transition-all duration-200 ease-in-out`}
+          className={`w-full mb-4 md:mb-24 rounded-3xl border border-border bg-card md:p-3 p-2 shadow-md focus-within:shadow-lg transition-all duration-200 ease-in-out`}
         >
           <form
             className="w-full flex gap-2"
@@ -140,7 +143,7 @@ export default function Chat() {
               }}
               onClick={() => !isAuthenticated && openLogin()}
               className="w-full field-sizing-content max-h-[120px] resize-none bg-transparent p-2 text-base text-foreground placeholder-muted-foreground focus:outline-none"
-              placeholder={isAuthenticated ? "Feel free to ask anything" : "🔒 Click here to login first..."}
+              placeholder={isAuthenticated ? "Feel free to ask anything" : "🔒 Please login first..."}
               disabled={status !== "ready" || !isAuthenticated}
               readOnly={!isAuthenticated}
             />

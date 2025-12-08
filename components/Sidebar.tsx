@@ -40,9 +40,9 @@ export default function Sidebar() {
       id: "clear",
       label: "Clear Chats",
       icon: <Trash2 size={18} />,
-      action: () => {
+      action: async () => {
         if (confirm("Are you sure you want to clear all chats?")) {
-          clearChats();
+          await clearChats();
           setConversations([]);
           setIsMenuOpen(false);
         }
@@ -67,10 +67,14 @@ export default function Sidebar() {
 
   useEffect(() => {
     setMounted(true);
-    setConversations(getChats());
+    const loadChats = async () => {
+      const chats = await getChats();
+      setConversations(chats);
+    }
+    loadChats();
 
     const handleStorageUpdate = () => {
-      setConversations(getChats());
+      loadChats()
     };
     window.addEventListener("storage", handleStorageUpdate);
     window.addEventListener("chat-updated", handleStorageUpdate);
