@@ -1,6 +1,5 @@
 // src/lib/ai-models.ts
 import { openai } from "@ai-sdk/openai";
-import { createOpenAI } from "@ai-sdk/openai";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 
 // --- 1. Configure Providers ---
