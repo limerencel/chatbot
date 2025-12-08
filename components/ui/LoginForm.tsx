@@ -11,11 +11,13 @@ export default function LoginForm({ onClose }: LoginFormProps) {
     const [password, setPassword] = useState("");
 
     const { login } = useAuth();
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         const status = await login(password);
         if (status) {
             onClose();
         } else {
+            setPassword("")
             alert("Login failed, please try again");
         }
     }
@@ -43,7 +45,7 @@ export default function LoginForm({ onClose }: LoginFormProps) {
 
                 {/* Body */}
                 <div className="p-4 space-y-4">
-                    <div className="space-y-2">
+                    <form className="space-y-2" onSubmit={handleSubmit}>
                         <input
                             type="password"
                             placeholder="passcode here..."
@@ -51,7 +53,7 @@ export default function LoginForm({ onClose }: LoginFormProps) {
                             onChange={(e) => setPassword(e.target.value)}
                             className='p-2 w-full border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring'
                         />
-                    </div>
+                    </form>
                 </div>
 
                 {/* Footer */}
